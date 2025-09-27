@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chatbot Uni-FACEF (Hugging Face)</title>
+  <style>
+    /* ===== Estilos globais ===== */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    /* Container principal do chatbot */
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Título do chatbot */
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    /* Campo de texto para pergunta */
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    /* Botão de enviar pergunta */
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #005baa;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Efeito ao passar o mouse no botão */
+    button:hover {
+      background-color: #004080;
+    }
+
+    /* Área onde a resposta da IA será exibida */
+    #resposta {
+      background-color: #e6f0ff;
+      border-left: 4px solid #005baa;
+      padding: 12px;
+      margin-top: 20px;
+      border-radius: 8px;
+      white-space: pre-line; /* Mantém quebras de linha do texto */
+      min-height: 40px; /* Altura mínima para evitar "pulos" na tela */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Chatbot Uni-FACEF</h1>
+
+    <!-- Campo de entrada de pergunta -->
+    <!-- O evento "onkeydown" permite enviar ao pressionar Enter -->
+    <input
+      type="text"
+      id="question"
+      placeholder="Digite sua pergunta e pressione Enter..."
+      onkeydown="if(event.key === 'Enter') enviarPergunta()"
+    />
+
+    <!-- Botão de envio -->
+    <button onclick="enviarPergunta()">Enviar</button>
+
+    <!-- Área de exibição da resposta -->
+    <div id="resposta"></div>
+  </div>
+
+  <script>
+    /**
+     * Função chamada quando o usuário envia uma pergunta
+     * Faz a requisição ao backend e exibe a resposta no HTML
+     */
+    async function enviarPergunta() {
+      const question = document.getElementById("question").value.trim(); // pega o texto digitado
+      const resposta = document.getElementById("resposta"); // área de resposta
+
+      // Se o campo estiver vazio, mostra aviso
+      if (!question) {
+        resposta.innerText = "Por favor, digite uma pergunta.";
+        return;
+      }
+
+      // Enquanto espera a resposta, mostra "Carregando..."
+      resposta.innerText = "Carregando...";
+
+      try {
+        // Faz requisição POST ao backend em Node.js (rota /api/chat)
+        const res = await fetch("http://localhost:3000/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }), // envia a pergunta no corpo
+        });
+
+        // Converte resposta em JSON
+        const data = await res.json();
+
+        // Mostra a resposta da IA no HTML
+        resposta.innerText = data.response || "Sem resposta da IA.";
+      } catch (err) {
+        // Caso aconteça algum erro (ex.: servidor desligado)
+        console.error("Erro na requisição:", err);
+        resposta.innerText = "Erro ao se comunicar com o servidor.";
+      }
+    }
+  </script>
+</body>
+</html>

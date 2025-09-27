@@ -1,0 +1,166 @@
+Base de Conhecimento para Chatbot - Processos de Benefício
+
+1. Visão Geral dos Processos:
+
+Troca de Titularidade: ara transferir a titularidade do plano de saúde de uma pessoa para outra.
+Solicitação de Autorização: Fluxo para obter aprovação para a realização de procedimentos médicos.
+Contestação de Cobrança Indevida: Etapas para questionar e resolver um valor cobrado incorretamente na fatura.
+Agendamento de Consultas: Orientações para marcar uma consulta, seja pelo aplicativo ou por outros canais.
+Adesão ao Plano de Maioridade: ara que dependentes universitários continuem no plano após atingirem a maioridade.
+Atualização Cadastral: Fluxo para alterar ou corrigir dados pessoais como endereço e informações de contato.
+Emissão de Segunda Via de Boleto: Guia rápido para o beneficiário emitir uma nova via do seu boleto de pagamento.
+
+---
+
+2. Mapa Detalhado de Cada Processo (Guia de Conversação):
+
+Troca de Titularidade
+
+Objetivo para o Beneficiário: Realizar a transferência da responsabilidade do plano de saúde para um novo titular.
+Informação Importante para o Chatbot: Este é um processo que exige a presença física tanto do titular atual quanto do futuro titular.
+Guia Passo a Passo para o Beneficiário:
+    1.  O que fazer primeiro? "Para iniciar a troca de titularidade, é necessário que tanto o titular atual quanto o futuro titular compareçam a uma de nossas unidades de atendimento. Lá, vocês solicitarão os documentos padrão para a troca."
+    2.  Quais documentos levar? "Ambos devem levar RG, CPF, certidões de estado civil e um comprovante de endereço."
+    3.  Após a solicitação: "Vocês receberão um documento para ser assinado por ambos. Após assinarem, tirem uma cópia e entreguem na mesma unidade de atendimento. Vocês receberão um número de protocolo."
+Gateways e Orientações:
+    Gateway 1: Verificação de Documentos
+        Pergunta/Decisão: Após a entrega, nosso setor de cadastro irá verificar se todos os documentos estão corretos e completos.
+        Opção "Sim" / "Aprovado":
+            Próximo Passo do Sistema: O cadastro é efetivado.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Seus documentos foram aprovados e a troca de titularidade foi concluída com sucesso. O novo titular já pode utilizar o plano. Você receberá uma confirmação oficial em breve."
+        Opção "Não" / "Reprovado":
+            Próximo Passo do Sistema: O processo é pausado até a correção dos documentos.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Verificamos que há uma pendência na sua documentação. Entraremos em contato por telefone ou WhatsApp para informar exatamente qual documento precisa ser corrigido ou reenviado. Assim que tiver o documento correto, por favor, retorne à unidade de atendimento para dar continuidade."
+
+---
+
+Solicitação de Autorização
+
+Objetivo para o Beneficiário: Conseguir a aprovação (autorização) do plano para realizar um exame, cirurgia ou outro procedimento.
+Guia Passo a Passo para o Beneficiário:
+    1.  Como solicitar? "Você pode solicitar uma autorização de duas formas: presencialmente em uma de nossas unidades ou enviando uma mensagem pelo WhatsApp."
+    2.  Quais informações preciso enviar? "Para agilizar, tenha em mãos seu nome completo, data de nascimento e uma foto nítida do pedido médico."
+Gateways e Orientações:
+    Gateway 1: Necessidade de Auditoria Médica
+        Pergunta/Decisão: O procedimento solicitado requer uma análise mais detalhada pela nossa equipe de auditoria médica?
+        Opção "Sim" / "Requer Auditoria":
+            Próximo Passo do Sistema: O pedido é enviado para a equipe de auditoria para análise técnica.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Sua solicitação precisa de uma análise da nossa auditoria médica. Anote o seu número de protocolo: [número]. O prazo para retorno é de até 3 dias úteis para procedimentos gerais e 10 dias úteis para casos que envolvam OPME (materiais especiais). Você pode acompanhar o status pelo nosso aplicativo ou entrando em contato novamente com este protocolo."
+        Opção "Não" / "Não Requer Auditoria":
+            Próximo Passo do Sistema: O pedido segue diretamente para a verificação de cobertura.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Sua solicitação não precisa de auditoria e já está sendo analisada quanto à cobertura do seu plano. Por favor, aguarde um momento."
+    Gateway 2: Verificação de Cobertura do Plano
+        Pergunta/Decisão: O procedimento está coberto pelo seu plano de saúde?
+        Opção "Sim" / "Procedimento Coberto":
+            Próximo Passo do Sistema: A autorização é gerada.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Boas notícias! Seu procedimento foi autorizado. O número da sua guia de autorização é [número] e o protocolo é [número]. Agora você já pode agendar a realização do procedimento."
+        Opção "Não" / "Procedimento Não Coberto":
+            Próximo Passo do Sistema: A solicitação é negada e o motivo é registrado.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Após análise, verificamos que o procedimento solicitado não possui cobertura pelo seu plano atual. O motivo da negativa é [motivo]. Se tiver alguma dúvida, posso te ajudar a entender melhor os detalhes da sua cobertura."
+
+---
+
+Contestação de Cobrança Indevida
+
+Objetivo para o Beneficiário: Informar sobre um valor que acredita estar errado em sua fatura e solicitar a correção.
+Guia Passo a Passo para o Beneficiário:
+    1.  Como iniciar? "Se você identificou uma cobrança que parece indevida, entre em contato conosco informando qual é o procedimento e a data da cobrança que você está questionando."
+    2.  O que acontece depois? "Vamos registrar sua solicitação e nossa equipe financeira irá analisar o caso. Você receberá um protocolo para acompanhar."
+Gateways e Orientações:
+    Gateway 1: Verificação da Cobrança
+        Pergunta/Decisão: A cobrança foi de fato indevida?
+        Opção "Sim" / "Cobrança Indevida":
+            Próximo Passo do Sistema: O sistema calcula a correção e prepara o desconto.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Confirmamos que a cobrança foi indevida e já estamos providenciando a correção. Nossa equipe entrará em contato com você para informar como o desconto será aplicado, seja na sua fatura atual ou na próxima."
+        Opção "Não" / "Cobrança Válida":
+            Próximo Passo do Sistema: O processo de contestação é encerrado.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Analisamos sua solicitação e verificamos que a cobrança está correta. Vamos te enviar por e-mail ou WhatsApp o comprovante de realização do procedimento que gerou essa cobrança para sua conferência. Se ainda tiver dúvidas, estou à disposição."
+
+---
+
+Agendamento de Consultas
+
+Objetivo para o Beneficiário: Marcar uma consulta médica de forma rápida e conveniente.
+Guia Passo a Passo para o Beneficiário:
+    Chatbot: "Você tem duas formas principais para agendar sua consulta. Qual prefere?"
+    Opção 1: Via Aplicativo (Mais rápido)
+        Instrução para o Beneficiário: "É super simples! Siga estes passos no nosso app:
+            1.  Faça login e clique em 'Buscar Agenda Disponível'.
+            2.  Filtre pela cidade, especialidade e, se preferir, pelo médico ou data.
+            3.  Veja os horários livres e selecione o melhor para você.
+            4.  Confirme os dados e pronto, sua consulta está agendada!"
+    Opção 2: Via Telefone ou WhatsApp
+        Instrução para o Beneficiário: "Você pode entrar em contato conosco por telefone ou WhatsApp. Para agilizar, por favor, informe:
+            Seu nome completo e data de nascimento.
+            A especialidade que procura e o motivo da consulta.
+            Nossa equipe de atendimento irá verificar as agendas disponíveis e passar as opções para você confirmar."
+
+---
+
+Adesão ao Plano de Maioridade
+
+Objetivo para o Beneficiário: Garantir a continuidade no plano de saúde como dependente, após atingir a maioridade, por estar cursando faculdade.
+Informação Importante para o Chatbot: Este processo deve ser realizado presencialmente em uma unidade de atendimento.
+Guia Passo a Passo para o Beneficiário:
+    1.  O que fazer? "Para aderir ao plano de maioridade, você precisa ir a uma de nossas unidades de atendimento."
+    2.  Quais documentos levar? "Leve cópias do seu RG, CPF e, o mais importante, um comprovante de matrícula atualizado da sua faculdade que também informe a frequência no curso."
+    3.  O que acontece depois? "Nossa equipe irá receber seus documentos, registrar o atendimento no sistema e te entregar um protocolo."
+Gateways e Orientações:
+    Gateway 1: Verificação de Documentos
+        Pergunta/Decisão: O comprovante de matrícula e os demais documentos estão corretos e válidos?
+        Opção "Sim" / "Aprovado":
+            Próximo Passo do Sistema: O cadastro é atualizado para o plano de maioridade.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Seus documentos foram validados com sucesso! Sua adesão ao plano de maioridade foi concluída e você continua com a cobertura do nosso plano."
+        Opção "Não" / "Reprovado":
+            Próximo Passo do Sistema: O processo fica pendente aguardando a documentação correta.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Notamos que há uma pendência em sua documentação. Um de nossos atendentes entrará em contato com você por telefone ou WhatsApp para explicar o que precisa ser corrigido. Geralmente, o problema está no comprovante de matrícula desatualizado ou sem a informação de frequência."
+
+---
+
+Atualização Cadastral
+
+Objetivo para o Beneficiário: Manter seus dados pessoais, como endereço ou telefone, sempre atualizados no sistema.
+Guia Passo a Passo para o Beneficiário:
+    1.  Como faço para atualizar? "É muito fácil! Me informe aqui pelo WhatsApp quais dados você deseja atualizar (por exemplo, endereço, telefone, e-mail)."
+    2.  Preciso enviar algum documento? "Sim. Após me dizer o que quer mudar, vou pedir que você anexe um documento que comprove essa alteração. Por exemplo, um novo comprovante de residência para mudança de endereço."
+Gateways e Orientações:
+    Gateway 1: Verificação de Informações
+        Pergunta/Decisão: O documento enviado confirma as informações que o beneficiário pediu para alterar?
+        Opção "Sim" / "Informações Corretas":
+            Próximo Passo do Sistema: Os dados são atualizados no CRM.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Recebido! Verificamos seu documento e seus dados já foram atualizados com sucesso em nosso sistema."
+        Opção "Não" / "Informações Incorretas":
+            Próximo Passo do Sistema: O processo é pausado.
+            Instrução para o Beneficiário (O que o Chatbot deve dizer): "Notei uma inconsistência entre a informação que você digitou e o documento enviado. Vou te explicar o que aconteceu e você pode me enviar o documento correto novamente. Por exemplo, o comprovante de residência não estava no seu nome ou era muito antigo."
+
+---
+
+Emissão de Segunda Via de Boleto
+
+Objetivo para o Beneficiário: Gerar um novo boleto para pagamento de forma autônoma e rápida.
+Guia Passo a Passo para o Beneficiário:
+    Chatbot: "Claro, gerar a segunda via do seu boleto é simples e você mesmo pode fazer pelo nosso site ou aplicativo. Siga os passos:"
+    1.  Acesse a plataforma: "Faça login no nosso App ou no Site do Beneficiário."
+    2.  Encontre a área financeira: "No menu principal, procure pela opção 'Financeiro' ou 'Meus Boletos'."
+    3.  Escolha o mês: "Selecione a fatura (competência) que você deseja pagar."
+    4.  Imprima ou copie: "Clique na opção 'Imprimir 2ª via' ou 'Copiar código de barras'. Pronto!"
+
+---
+
+3. Glossário de Termos e Ações Comuns:
+
+Beneficiário: É o cliente, a pessoa que utiliza o plano de saúde.
+Atendimento: Refere-se à nossa equipe de suporte, que ajuda o beneficiário em suas solicitações.
+Protocolo: Um número único de identificação para cada solicitação ou atendimento, usado para acompanhar o andamento do processo.
+Auditoria Médica: Uma análise técnica realizada por uma equipe de saúde para avaliar a necessidade e adequação de um procedimento médico solicitado.
+CRM / ERP Solus: Nomes dos nossos sistemas internos onde registramos suas informações e solicitações. Você não precisa se preocupar com eles, é apenas para nosso controle.
+Aguardar Atendimento: Significa que sua solicitação está na fila para ser tratada por um de nossos especialistas. O tempo de espera pode variar conforme a demanda.
+Competência: Refere-se ao mês de referência da fatura ou do boleto (ex: competência 09/2025 é a fatura referente a setembro de 2025).
+
+---
+
+4. Fluxos Cruzados e Encadeamentos:
+
+Correção de Documentos (P1, P5, P6): Em processos que exigem envio de documentos, se um gateway de "Verificação de Documentos" resultar em "Não/Reprovado", a instrução do chatbot deve ser sempre guiar o beneficiário a reenviar a documentação correta, reiniciando a etapa de verificação daquele mesmo processo. Exemplo: "Notei que seu documento para a Atualização Cadastral (P6) foi reprovado. Para continuar, por favor, envie o documento correto. Posso te lembrar quais são os critérios?"
+Negação de Autorização (P2): Se uma "Solicitação de Autorização" (P2) for negada, a instrução do chatbot deve ser clara sobre o motivo e, se aplicável, sugerir o próximo passo. Exemplo: "Sua autorização foi negada porque o procedimento não está coberto pelo seu plano. Você pode verificar os detalhes da sua cobertura no manual do beneficiário ou, se não concordar, entrar em contato com nossa central de atendimento para mais esclarecimentos."
+Falha no Agendamento via App (P4): Se um beneficiário relatar dificuldade em usar o aplicativo para agendar uma consulta (P4), o chatbot deve imediatamente pedir para o beneficiário entrar em contato com a unidade.
