@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente Universitário de Saúde</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .welcome-text {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #e0e0e0;
+            border-radius: 12px;
+            padding: 40px 20px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #fafafa;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: #4ecdc4;
+            background: #f0fffe;
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #4ecdc4;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .protocol-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #4ecdc4;
+        }
+
+        .protocol-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-content {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .status-approved {
+            background: #28a745;
+        }
+
+        .status-pending {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .exam-list {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .exam-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+        }
+
+        .exam-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .file-selected {
+            background: #e8f5e8;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            color: #155724;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .upload-area {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Assistente Universitário de Saúde</h1>
+            <p>Sistema de análise de exames e protocolo</p>
+        </div>
+
+        <div class="content">
+            <div id="welcome-screen">
+                <div class="icon">🏥</div>
+                <h2 class="welcome-title">Bem-vindo!</h2>
+                <p class="welcome-text">
+                    Sou seu assistente universitário de saúde. Envie um arquivo PDF ou
+                    imagem com seus exames laboratoriais e receba informações sobre
+                    prazos e protocolo de análise.
+                </p>
+
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Clique para selecionar arquivo</div>
+                    <div class="upload-subtext">ou arraste e solte aqui</div>
+                    <div class="upload-subtext">PDF, PNG, JPG (máx. 10MB)</div>
+                </div>
+
+                <input type="file" id="fileInput" class="file-input" accept=".pdf,.png,.jpg,.jpeg"
+                    onchange="handleFileSelect(event)">
+
+                <div id="fileInfo" class="file-info hidden">
+                    <span>📎</span>
+                    <span id="fileName"></span>
+                    <span id="fileSize"></span>
+                </div>
+
+                <div id="error-message" class="error hidden"></div>
+                <div id="success-message" class="success hidden"></div>
+
+                <button id="uploadBtn" class="btn" onclick="uploadFile()" disabled>
+                    <span id="uploadBtnText">Selecione um arquivo</span>
+                </button>
+            </div>
+
+            <div id="result-screen" class="hidden">
+                <div class="protocol-info">
+                    <div class="protocol-number" id="protocolNumber"></div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-title">
+                        <span class="status-icon" id="statusIcon"></span>
+                        <span id="resultTitle"></span>
+                    </div>
+                    <div class="result-content" id="resultContent"></div>
+
+                    <div id="examList" class="exam-list hidden">
+                        <strong>Exames inclusos no protocolo:</strong>
+                        <div id="exams"></div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="voltarInicio()">Nova Análise</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+
+        // Configurar drag and drop
+        const uploadArea = document.getElementById('uploadArea');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight() {
+            uploadArea.classList.add('dragover');
+        }
+
+        function unhighlight() {
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            // Validar tipo de arquivo
+            const validTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                showError('Tipo de arquivo não suportado. Use PDF, PNG ou JPG.');
+                return;
+            }
+
+            // Validar tamanho (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showError('Arquivo muito grande. Tamanho máximo: 10MB.');
+                return;
+            }
+
+            selectedFile = file;
+
+            // Mostrar informações do arquivo
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = `(${formatFileSize(file.size)})`;
+            document.getElementById('fileInfo').classList.remove('hidden');
+
+            // Atualizar UI
+            uploadArea.classList.add('file-selected');
+            uploadArea.innerHTML = `
+                <div class="upload-icon">✅</div>
+                <div class="upload-text">Arquivo selecionado</div>
+                <div class="upload-subtext">${file.name}</div>
+            `;
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.disabled = false;
+            document.getElementById('uploadBtnText').textContent = 'Analisar Documento';
+
+            hideMessages();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        async function uploadFile() {
+            if (!selectedFile) {
+                showError('Nenhum arquivo selecionado.');
+                return;
+            }
+
+            console.log('=== INÍCIO DO UPLOAD ===');
+            console.log('Arquivo selecionado:', selectedFile);
+            console.log('Nome:', selectedFile.name);
+            console.log('Tipo:', selectedFile.type);
+            console.log('Tamanho:', selectedFile.size);
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadBtnText = document.getElementById('uploadBtnText');
+
+            // Mostrar loading
+            uploadBtn.disabled = true;
+            uploadBtnText.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Analisando documento...</span>
+                </div>
+            `;
+
+            const formData = new FormData();
+            formData.append('documento', selectedFile);
+
+            console.log('FormData criado:', formData);
+            console.log('URL da requisição:', '/api/chat/upload');
+
+            try {
+                console.log('Enviando arquivo:', selectedFile.name);
+
+                const response = await fetch('http://localhost:3000/api/chat/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('Status da resposta:', response.status);
+
+                // Verificar se a resposta é JSON
+                const contentType = response.headers.get('content-type');
+                console.log('Content-Type:', contentType);
+
+                // Ler o corpo da resposta UMA ÚNICA VEZ
+                const responseText = await response.text();
+                console.log('Resposta do servidor (texto):', responseText);
+
+                if (!response.ok) {
+                    let errorMessage;
+                    try {
+                        const errorData = JSON.parse(responseText);
+                        errorMessage = errorData.error || `Erro HTTP: ${response.status}`;
+                    } catch (parseError) {
+                        console.error('Resposta de erro (texto):', responseText);
+                        errorMessage = `Erro HTTP ${response.status}: ${responseText}`;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                // Tentar fazer parse da resposta como JSON
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                    console.log('Dados processados:', data);
+                } catch (parseError) {
+                    console.error('Erro ao fazer parse do JSON:', parseError);
+                    console.error('Conteúdo da resposta:', responseText);
+                    throw new Error('Resposta do servidor não é um JSON válido: ' + parseError.message);
+                }
+
+                console.log('Dados processados:', data);
+
+                mostrarResultado(data);
+                showSuccess('Documento analisado com sucesso!');
+
+            } catch (error) {
+                console.error('Erro completo no upload:', error);
+                showError(`Erro ao processar documento: ${error.message}`);
+
+                // Restaurar botão
+                uploadBtn.disabled = false;
+                uploadBtnText.textContent = 'Analisar Documento';
+            }
+        }
+
+        function mostrarResultado(data) {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            let necessitaAuditoria = false;
+            let prazoMaximo = 0;
+
+            // Verifica se algum exame possui um prazo MAIOR QUE ZERO
+            if (data.dadosExtraidos && Array.isArray(data.dadosExtraidos) && data.dadosExtraidos.length > 0) {
+                data.dadosExtraidos.forEach(exame => {
+                    // Garante que o exame tem a propriedade 'prazo' para evitar erros
+                    if (exame.prazo) {
+                        // Extrai apenas os números do prazo e converte para inteiro
+                        const prazoNumero = parseInt(exame.prazo.replace(/\D/g, '')) || 0;
+
+                        // --- MUDANÇA PRINCIPAL AQUI ---
+                        // Só considera para auditoria se o prazo for maior que 0
+                        if (prazoNumero > 0) {
+                            necessitaAuditoria = true; // Marca que o protocolo precisa de auditoria
+
+                            // Atualiza o prazo máximo se o atual for maior
+                            if (prazoNumero > prazoMaximo) {
+                                prazoMaximo = prazoNumero;
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Mostrar número do protocolo
+            document.getElementById('protocolNumber').textContent = `Protocolo: ${data.protocolo}`;
+
+            const statusIcon = document.getElementById('statusIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultContent = document.getElementById('resultContent');
+
+            // A decisão continua baseada na variável 'necessitaAuditoria'
+            if (necessitaAuditoria) {
+                statusIcon.textContent = '⏳';
+                statusIcon.className = 'status-icon status-pending';
+                resultTitle.textContent = 'Auditoria Necessária';
+
+                resultContent.innerHTML = `
+            <strong>Atenção!</strong><br>
+            Seu protocolo <strong>precisa passar por auditoria</strong> antes da liberação dos exames.<br>
+            <br>
+            <strong>Prazo máximo para análise:</strong> ${prazoMaximo} dias<br>
+            <br>
+            Aguarde o contato da equipe de auditoria.
+        `;
+            } else {
+                statusIcon.textContent = '✓';
+                statusIcon.className = 'status-icon status-approved';
+                resultTitle.textContent = 'Protocolo Aprovado';
+                resultContent.innerHTML = `
+            <strong>Ótimas notícias!</strong><br>
+            Seu protocolo foi aprovado e <strong>não necessita de auditoria</strong>.<br>
+            Os exames podem ser realizados normalmente.
+        `;
+            }
+
+            // Mostrar lista de exames (esta parte permanece igual)
+            if (data.dadosExtraidos && Array.isArray(data.dadosExtraidos) && data.dadosExtraidos.length > 0) {
+                const examList = document.getElementById('examList');
+                const examsDiv = document.getElementById('exams');
+
+                examList.classList.remove('hidden');
+                examsDiv.innerHTML = '';
+
+                data.dadosExtraidos.forEach(exame => {
+                    const examDiv = document.createElement('div');
+                    examDiv.className = 'exam-item';
+                    examDiv.innerHTML = `
+                <strong>${exame.exame || 'Exame não especificado'}</strong><br>
+                <small>Tipo: ${exame.tipo_assinatura || 'N/A'} | Prazo: ${exame.prazo || 'N/A'}</small>
+            `;
+                    examsDiv.appendChild(examDiv);
+                });
+            }
+        }
+
+        function voltarInicio() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('welcome-screen').classList.remove('hidden');
+
+            // Reset do form
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileInfo').classList.add('hidden');
+
+            // Reset upload area
+            uploadArea.classList.remove('file-selected');
+            uploadArea.innerHTML = `
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Clique para selecionar arquivo</div>
+                <div class="upload-subtext">ou arraste e solte aqui</div>
+                <div class="upload-subtext">PDF, PNG, JPG (máx. 10MB)</div>
+            `;
+
+            // Reset botão
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.disabled = true;
+            document.getElementById('uploadBtnText').textContent = 'Selecione um arquivo';
+
+            hideMessages();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            document.getElementById('success-message').classList.add('hidden');
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.classList.remove('hidden');
+            document.getElementById('error-message').classList.add('hidden');
+        }
+
+        function hideMessages() {
+            document.getElementById('error-message').classList.add('hidden');
+            document.getElementById('success-message').classList.add('hidden');
+        }
+    </script>
+</body>
+
+</html>

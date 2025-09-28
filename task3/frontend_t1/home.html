@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente de Agendamento Médico</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            background-attachment: fixed;
+        }
+
+        .sidebar {
+            width: 300px;
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-attachment: fixed;
+
+        }
+
+        .logo-section {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(79, 172, 254, 0.3);
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: #4facfe;
+        }
+
+        .logo-text {
+            color: white;
+            font-size: 14px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .sidebar-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .option-button {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .option-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .option-button i {
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        .welcome-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+            display: none;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .message.bot .message-avatar {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            color: white;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+        }
+
+        .input-section {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-dots {
+            display: inline-block;
+            color: white;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 2s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+
+        .quick-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quick-option {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .quick-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* NEW: Class to style the button container */
+        .button-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        /* UPDATED: Removed margin */
+        .specialty-btn, .doctor-btn, .date-btn, .time-btn {
+            background: rgba(79, 172, 254, 0.2);
+            border: 1px solid rgba(79, 172, 254, 0.4);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .specialty-btn:hover, .doctor-btn:hover, .date-btn:hover, .time-btn:hover {
+            background: rgba(79, 172, 254, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .appointment-summary {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 10px 0;
+            color: white;
+        }
+
+        .appointment-summary h4 {
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+
+        .confirm-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 15px;
+            }
+
+            .quick-options {
+                grid-template-columns: 1fr;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-section">
+            <div class="logo">
+                <i class="fas fa-stethoscope"></i>
+            </div>
+            <div class="logo-text">
+                Estou aqui para ajudar com agendamento de consultas médicas
+            </div>
+        </div>
+
+        <h3 class="sidebar-title">Como posso ajudar?</h3>
+
+        <button class="option-button" onclick="startScheduling()">
+            <i class="fas fa-calendar-plus"></i>
+            Agendar Consulta
+        </button>
+
+        <button class="option-button" onclick="showSpecialties()">
+            <i class="fas fa-user-md"></i>
+            Ver Especialidades
+        </button>
+
+        <button class="option-button" onclick="showDoctors()">
+            <i class="fas fa-hospital"></i>
+            Ver Médicos
+        </button>
+
+        <button class="option-button" onclick="checkAvailability()">
+            <i class="fas fa-clock"></i>
+            Verificar Disponibilidade
+        </button>
+
+        <button class="option-button" onclick="resetChat()">
+            <i class="fas fa-refresh"></i>
+            Nova Consulta
+        </button>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Assistente de Agendamento Médico</h1>
+            <button class="back-btn" onclick="resetChat()">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+
+        <div class="chat-container">
+            <div class="welcome-section" id="welcomeSection">
+                <h2>Bem-vindo!</h2>
+                <p>Sou seu assistente de agendamento médico. Escolha uma das opções ao lado ou digite sua pergunta abaixo.</p>
+                <p>Estou aqui para ajudar com informações sobre consultas médicas.</p>
+
+                <div class="quick-options">
+                    <div class="quick-option" onclick="startScheduling()">
+                        <i class="fas fa-calendar-plus"></i><br>
+                        Agendar Nova Consulta
+                    </div>
+                    <div class="quick-option" onclick="showSpecialties()">
+                        <i class="fas fa-list"></i><br>
+                        Ver Especialidades Disponíveis
+                    </div>
+                    <div class="quick-option" onclick="checkAvailability()">
+                        <i class="fas fa-search"></i><br>
+                        Verificar Disponibilidade
+                    </div>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer"></div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-dots">Processando</div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="input-container">
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="messageInput" 
+                    placeholder="Digite sua pergunta aqui... Por exemplo: 'Como agendar uma consulta?'"
+                    onkeypress="handleKeyPress(event)"
+                >
+                <button class="send-btn" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado da conversa
+        let conversationState = {
+            step: 'initial',
+            cidade: '',
+            especialidade: '',
+            medico: '',
+            data: '',
+            hora: '',
+            especialidades: [],
+            medicos: [],
+            datas: []
+        };
+
+        // Função para adicionar mensagem ao chat
+        function addMessage(content, isUser = false, isHtml = false) {
+            const welcomeSection = document.getElementById('welcomeSection');
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            if (welcomeSection.style.display !== 'none') {
+                welcomeSection.style.display = 'none';
+                messagesContainer.style.display = 'block';
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.innerHTML = isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (isHtml) {
+                contentDiv.innerHTML = content;
+            } else {
+                contentDiv.textContent = content;
+            }
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Função para mostrar loading
+        function showLoading(show = true) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // Função para enviar mensagem
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, true);
+            input.value = '';
+            
+            showLoading(true);
+            
+            // Simular delay da API
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Processar mensagem baseada no estado atual
+            await processMessage(message);
+            
+            showLoading(false);
+        }
+
+        // Função para processar mensagem
+        async function processMessage(message) {
+            const lowerMessage = message.toLowerCase();
+
+            // Se o usuário menciona uma cidade, capturar
+            if (lowerMessage.includes('são paulo') || lowerMessage.includes('sp')) {
+                conversationState.cidade = 'São Paulo';
+            } else if (lowerMessage.includes('campinas')) {
+                conversationState.cidade = 'Campinas';
+            }
+
+            // Fluxo baseado no estado atual
+            switch (conversationState.step) {
+                case 'initial':
+                    if (lowerMessage.includes('agendar') || lowerMessage.includes('consulta')) {
+                        await startSchedulingFlow();
+                    } else if (lowerMessage.includes('especialidade')) {
+                        await showSpecialtiesFlow();
+                    } else if (lowerMessage.includes('médico')) {
+                        await showDoctorsFlow();
+                    } else {
+                        addMessage("Olá! Posso ajudar você a agendar uma consulta médica. Você gostaria de:\n\n• Agendar uma nova consulta\n• Ver especialidades disponíveis\n• Verificar médicos disponíveis\n• Consultar disponibilidade de horários\n\nO que você precisa?");
+                    }
+                    break;
+                    
+                case 'waiting_city':
+                    if (conversationState.cidade) {
+                        await loadSpecialties();
+                    } else {
+                        addMessage("Por favor, me informe a cidade onde você gostaria de agendar a consulta. As cidades disponíveis são: São Paulo e Campinas.");
+                    }
+                    break;
+                    
+                case 'waiting_specialty':
+                    // Procurar especialidade na mensagem
+                    const specialty = findSpecialtyInMessage(message);
+                    if (specialty) {
+                        conversationState.especialidade = specialty;
+                        await loadDoctors();
+                    } else {
+                        addMessage("Por favor, escolha uma das especialidades disponíveis clicando nos botões acima ou digite o nome da especialidade.");
+                    }
+                    break;
+                    
+                case 'waiting_doctor':
+                    // Procurar médico na mensagem
+                    const doctor = findDoctorInMessage(message);
+                    if (doctor) {
+                        conversationState.medico = doctor;
+                        await loadDates();
+                    } else {
+                        addMessage("Por favor, escolha um dos médicos disponíveis clicando nos botões acima ou digite o nome do médico.");
+                    }
+                    break;
+                    
+                case 'waiting_date':
+                    // Procurar data na mensagem
+                    const date = findDateInMessage(message);
+                    if (date) {
+                        conversationState.data = date;
+                        await showTimeOptions();
+                    } else {
+                        addMessage("Por favor, escolha uma das datas disponíveis clicando nos botões acima ou digite a data no formato DD/MM/AAAA.");
+                    }
+                    break;
+                    
+                case 'waiting_time':
+                    // Procurar horário na mensagem
+                    const time = findTimeInMessage(message);
+                    if (time) {
+                        conversationState.hora = time;
+                        await showAppointmentSummary();
+                    } else {
+                        addMessage("Por favor, escolha um dos horários disponíveis: 12:00 ou 17:00.");
+                    }
+                    break;
+                    
+                default:
+                    addMessage("Como posso ajudar você hoje?");
+            }
+        }
+
+        // Funções auxiliares para encontrar informações nas mensagens
+        function findSpecialtyInMessage(message) {
+            const specialties = conversationState.especialidades;
+            return specialties.find(s => message.toLowerCase().includes(s.toLowerCase()));
+        }
+
+        function findDoctorInMessage(message) {
+            const doctors = conversationState.medicos;
+            return doctors.find(d => message.toLowerCase().includes(d.toLowerCase()));
+        }
+
+        function findDateInMessage(message) {
+            // Procurar por padrões de data
+            const dateRegex = /(\d{4}-\d{2}-\d{2})|(\d{2}\/\d{2}\/\d{4})/;
+            const match = message.match(dateRegex);
+            if (match) {
+                return match[1] || match[2];
+            }
+            return null;
+        }
+
+        function findTimeInMessage(message) {
+            if (message.includes('12:00') || message.includes('9:00') || message.includes('manhã')) {
+                return '12:00';
+            } else if (message.includes('17:00') || message.includes('2:00') || message.includes('tarde')) {
+                return '17:00';
+            }
+            return null;
+        }
+
+        // Fluxos específicos
+        async function startSchedulingFlow() {
+            conversationState.step = 'waiting_city';
+            addMessage("Vou ajudar você a agendar uma consulta! Primeiro, em qual cidade você gostaria de agendar? (São Paulo ou Campinas)");
+        }
+
+        async function showSpecialtiesFlow() {
+            if (!conversationState.cidade) {
+                conversationState.step = 'waiting_city';
+                addMessage("Para mostrar as especialidades, preciso saber em qual cidade você está procurando. Qual cidade? (São Paulo ou Campinas)");
+                return;
+            }
+            await loadSpecialties();
+        }
+
+        async function showDoctorsFlow() {
+            if (!conversationState.cidade) {
+                conversationState.step = 'waiting_city';
+                addMessage("Para mostrar os médicos, preciso saber a cidade e especialidade. Em qual cidade? (São Paulo ou Campinas)");
+                return;
+            }
+            
+            if (!conversationState.especialidade) {
+                await loadSpecialties();
+                return;
+            }
+            
+            await loadDoctors();
+        }
+
+        // Funções para carregar dados da API
+        async function loadSpecialties() {
+            try {
+                // Simulating API call
+                const data = { especialidades: ["Cardiologia", "Dermatologia", "Ginecologia", "Ortopedia", "Pediatria"] };
+                
+                if (data.especialidades && data.especialidades.length > 0) {
+                    conversationState.especialidades = data.especialidades;
+                    conversationState.step = 'waiting_specialty';
+                    
+                    let html = `Especialidades disponíveis em ${conversationState.cidade}:
+                                <div class="button-grid">`;
+                    data.especialidades.forEach(especialidade => {
+                        html += `<button class="specialty-btn" onclick="selectSpecialty('${especialidade}')">${especialidade}</button>`;
+                    });
+                    html += `</div>
+                             <p style="margin-top: 15px; font-size: 14px;">Clique em uma especialidade ou digite o nome da especialidade desejada.</p>`;
+                    
+                    addMessage(html, false, true);
+                } else {
+                    addMessage("Nenhuma especialidade encontrada nesta cidade.");
+                }
+            } catch (error) {
+                addMessage("Erro ao carregar especialidades. Tente novamente.");
+                console.error('Erro:', error);
+            }
+        }
+
+        async function loadDoctors() {
+            try {
+                // Simulating API call
+                const data = { medicos: ["Dr. João Silva", "Dra. Mariana Silva", "Dr. Carlos Souza"] };
+
+                if (data.medicos && data.medicos.length > 0) {
+                    conversationState.medicos = data.medicos;
+                    conversationState.step = 'waiting_doctor';
+                    
+                    let html = `Médicos disponíveis em ${conversationState.especialidade} - ${conversationState.cidade}:
+                                <div class="button-grid">`;
+                    data.medicos.forEach(medico => {
+                        html += `<button class="doctor-btn" onclick="selectDoctor('${medico}')">${medico}</button>`;
+                    });
+                    html += `</div>
+                             <p style="margin-top: 15px; font-size: 14px;">Clique em um médico ou digite o nome do médico desejado.</p>`;
+                    
+                    addMessage(html, false, true);
+                } else {
+                    addMessage("Nenhum médico encontrado para esta especialidade.");
+                }
+            } catch (error) {
+                addMessage("Erro ao carregar médicos. Tente novamente.");
+                console.error('Erro:', error);
+            }
+        }
+
+        async function loadDates() {
+            try {
+                // Simulating API call
+                const data = { datas: [
+                    { data: '2025-07-28' }, { data: '2025-08-23' }, { data: '2025-09-30' }, { data: '2025-10-17' },
+                    { data: '2025-11-05' }, { data: '2025-12-08' }, { data: '2025-10-24' }, { data: '2025-11-17' },
+                    { data: '2025-09-08' }, { data: '2025-10-07' }
+                ] };
+                
+                if (data.datas && data.datas.length > 0) {
+                    conversationState.datas = data.datas.map(d => d.data);
+                    conversationState.step = 'waiting_date';
+                    
+                    let html = `Datas disponíveis para ${conversationState.medico}:
+                                <div class="button-grid">`;
+                    data.datas.forEach(item => {
+                        const dateObj = new Date(item.data + 'T03:00:00Z'); // Adjust for timezone
+                        const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                        html += `<button class="date-btn" onclick="selectDate('${item.data}')">${formattedDate}</button>`;
+                    });
+                    html += `</div>
+                             <p style="margin-top: 15px; font-size: 14px;">Clique em uma data ou digite a data desejada.</p>`;
+                    
+                    addMessage(html, false, true);
+                } else {
+                    addMessage("Nenhuma data disponível encontrada.");
+                }
+            } catch (error) {
+                addMessage("Erro ao carregar datas. Tente novamente.");
+                console.error('Erro:', error);
+            }
+        }
+
+        async function showTimeOptions() {
+            conversationState.step = 'waiting_time';
+            const dateObj = new Date(conversationState.data + 'T03:00:00Z');
+            const formattedDate = dateObj.toLocaleDateString('pt-BR');
+            
+            let html = `Horários disponíveis para ${formattedDate}:
+                        <div class="button-grid">`;
+            html += `<button class="time-btn" onclick="selectTime('12:00')">12:00</button>`;
+            html += `<button class="time-btn" onclick="selectTime('17:00')">17:00</button>`;
+            html += `</div>
+                     <p style="margin-top: 15px; font-size: 14px;">Clique em um horário ou digite o horário desejado.</p>`;
+            
+            addMessage(html, false, true);
+        }
+
+
+        async function showAppointmentSummary() {
+            const dateObj = new Date(conversationState.data + 'T03:00:00Z');
+            const formattedDate = dateObj.toLocaleDateString('pt-BR');
+            
+            let html = `<div class="appointment-summary">
+                <h4><i class="fas fa-calendar-check"></i> Resumo da Consulta</h4>
+                <p><strong>Cidade:</strong> ${conversationState.cidade}</p>
+                <p><strong>Especialidade:</strong> ${conversationState.especialidade}</p>
+                <p><strong>Médico:</strong> ${conversationState.medico}</p>
+                <p><strong>Data:</strong> ${formattedDate}</p>
+                <p><strong>Horário:</strong> ${conversationState.hora}</p>
+                <button class="confirm-btn" onclick="confirmAppointment()">
+                    <i class="fas fa-check"></i> Confirmar Agendamento
+                </button>
+            </div>`;
+            
+            addMessage(html, false, true);
+        }
+
+        // Funções de seleção
+        function selectSpecialty(specialty) {
+            addMessage(specialty, true);
+            showLoading(true);
+            setTimeout(() => {
+                conversationState.especialidade = specialty;
+                loadDoctors();
+                showLoading(false);
+            }, 500);
+        }
+
+        function selectDoctor(doctor) {
+            addMessage(doctor, true);
+            showLoading(true);
+            setTimeout(() => {
+                conversationState.medico = doctor;
+                loadDates();
+                showLoading(false);
+            }, 500);
+        }
+
+        function selectDate(date) {
+            const dateObj = new Date(date + 'T03:00:00Z');
+            const formattedDate = dateObj.toLocaleDateString('pt-BR');
+            addMessage(formattedDate, true);
+            showLoading(true);
+            setTimeout(() => {
+                conversationState.data = date;
+                showTimeOptions();
+                showLoading(false);
+            }, 500);
+        }
+
+        function selectTime(time) {
+            addMessage(time, true);
+            showLoading(true);
+            setTimeout(() => {
+                conversationState.hora = time;
+                showAppointmentSummary();
+                showLoading(false);
+            }, 500);
+        }
+
+        // Função para confirmar agendamento
+        async function confirmAppointment() {
+            showLoading(true);
+            
+            // Simulating API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            try {
+                const fullDate = new Date(`${conversationState.data}T${conversationState.hora}:00`);
+                const response = { 
+                    ok: true,
+                    json: () => Promise.resolve({ 
+                        consulta: {
+                            protocolo: `PRT-${Date.now()}`,
+                            dataHora: fullDate.toISOString()
+                        }
+                    })
+                };
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let html = `<div style="background: rgba(76, 175, 80, 0.3); border: 1px solid rgba(76, 175, 80, 0.6); padding: 20px; border-radius: 12px; color: white;">
+                        <h4 style="color: #4CAF50; margin-bottom: 15px;">
+                            <i class="fas fa-check-circle"></i> Consulta Agendada com Sucesso!
+                        </h4>
+                        <p><strong>Protocolo:</strong> ${data.consulta.protocolo}</p>
+                        <p><strong>Data/Hora:</strong> ${new Date(data.consulta.dataHora).toLocaleString('pt-BR')}</p>
+                        <p style="margin-top: 15px; font-size: 14px; opacity: 0.9;">
+                            <i class="fas fa-info-circle"></i> Guarde este protocolo para futuras consultas.
+                        </p>
+                        <button class="confirm-btn" onclick="resetChat()" style="margin-top: 15px;">
+                            <i class="fas fa-plus"></i> Agendar Nova Consulta
+                        </button>
+                    </div>`;
+                    
+                    addMessage(html, false, true);
+                    conversationState.step = 'completed';
+                } else {
+                    addMessage(`❌ Erro ao agendar: ${data.error}`);
+                }
+            } catch (error) {
+                addMessage("Erro ao confirmar agendamento. Tente novamente.");
+                console.error('Erro:', error);
+            }
+            
+            showLoading(false);
+        }
+
+        // Funções dos botões da sidebar
+        function startScheduling() {
+            resetConversation();
+            startSchedulingFlow();
+        }
+
+        function showSpecialties() {
+            resetConversation();
+            showSpecialtiesFlow();
+        }
+
+        function showDoctors() {
+            resetConversation();
+            showDoctorsFlow();
+        }
+
+        function checkAvailability() {
+            resetConversation();
+            conversationState.step = 'waiting_city';
+            addMessage("Vou verificar a disponibilidade de horários! Em qual cidade você gostaria de consultar? (São Paulo ou Campinas)");
+        }
+
+        function resetChat() {
+            resetConversation();
+            document.getElementById('messagesContainer').innerHTML = '';
+            document.getElementById('messagesContainer').style.display = 'none';
+            document.getElementById('welcomeSection').style.display = 'block';
+        }
+
+        function resetConversation() {
+            conversationState = {
+                step: 'initial',
+                cidade: '',
+                especialidade: '',
+                medico: '',
+                data: '',
+                hora: '',
+                especialidades: [],
+                medicos: [],
+                datas: []
+            };
+        }
+
+        // Event listeners
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('messageInput').focus();
+            window.addEventListener('resize', function() {
+                const messagesContainer = document.getElementById('messagesContainer');
+                if (messagesContainer.style.display === 'block') {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

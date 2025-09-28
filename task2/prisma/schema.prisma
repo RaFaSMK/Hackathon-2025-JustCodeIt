@@ -37,3 +37,8 @@ model Consulta {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+model ValidacaoProtocolo {
+  protocolo String  @id           
+  status    Boolean @default(false)
+}

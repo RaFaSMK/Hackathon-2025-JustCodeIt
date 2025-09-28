@@ -10,56 +10,69 @@ const { extractExamsFromFile } = require('../services/tesseractService');
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// --- Configuração do Multer ---
+// Configuração do Multer
 const uploadDir = 'uploads';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 const upload = multer({ dest: uploadDir });
 
-// --- Rota de Upload ---
+// IMPORTANTE: Adicione logs de debug
 router.post('/upload', upload.single('documento'), async (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'Nenhum arquivo enviado. Por favor, anexe um documento.' });
-    }
-
-    console.log(`[ROUTER] Arquivo recebido: ${req.file.originalname}, mimetype: ${req.file.mimetype}`);
-
+    console.log('=== DEBUG UPLOAD ===');
+    console.log('Método:', req.method);
+    console.log('URL:', req.url);
+    console.log('req.file:', req.file);
+    console.log('req.body:', req.body);
+    console.log('==================');
+    
+    // Sempre retorne JSON válido
     try {
-        // 1. Processa o arquivo (OCR)
-        const processedData = await extractExamsFromFile(req.file);
+        if (!req.file) {
+            console.log('❌ Nenhum arquivo encontrado');
+            return res.status(400).json({ error: 'Nenhum arquivo enviado.' });
+        }
 
-        // 2. Gera protocolo único
-        const protocolo = `UNIAGENDE-${dayjs().format("YYYYMMDD")}-${uuidv4().slice(0, 8)}`;
+        console.log('✅ Arquivo recebido:', req.file.originalname);
+        
+        const { exams, statusProtocolo } = await extractExamsFromFile(req.file);
+        const protocolo = `UNIAGENDE-${dayjs().format('YYYYMMDD')}-${uuidv4().slice(0,8)}`;
 
-        // 3. Salva no banco
-        // Ajuste os campos conforme sua tabela Prisma (exemplo com "consulta")
+        // Salva Consulta
         const consulta = await prisma.consulta.create({
             data: {
-                cidade: processedData.cidade || "N/A",
-                especialidade: processedData.especialidade || "N/A",
-                medico: processedData.medico || "N/A",
+                cidade: "N/A",
+                especialidade: "N/A",
+                medico: "N/A",
                 dataHora: new Date(),
-                protocolo,
-                // se quiser salvar o texto/JSON inteiro:
-                resultadoOCR: JSON.stringify(processedData)
+                protocolo
             }
         });
 
-        // 4. Retorna protocolo + resultado OCR
-        res.status(200).json({
-            protocolo,
-            dadosExtraidos: processedData,
-            consultaSalva: consulta
+        // Salva ValidacaoProtocolo
+        await prisma.validacaoProtocolo.create({
+            data: { protocolo, status: statusProtocolo }
         });
 
+        const response = { 
+            protocolo, 
+            dadosExtraidos: exams, 
+            statusProtocolo, 
+            consultaSalva: consulta 
+        };
+        
+        console.log('✅ Resposta enviada:', response);
+        return res.status(200).json(response);
+        
     } catch (error) {
-        console.error('[ROUTER] Erro ao processar o documento:', error);
-        res.status(500).json({ 
-            error: 'Ocorreu um erro interno ao processar o documento.',
-            details: error.message 
+        console.error('[ROUTER] Erro:', error);
+        return res.status(500).json({ 
+            error: error.message || 'Erro interno do servidor' 
         });
     }
+});
+
+// Adicione uma rota de teste
+router.get('/test', (req, res) => {
+    res.json({ message: 'Rota de chat funcionando!' });
 });
 
 module.exports = router;
