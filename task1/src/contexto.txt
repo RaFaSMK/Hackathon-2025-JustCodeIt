@@ -121,13 +121,13 @@ Atualização Cadastral
 
 Objetivo para o Beneficiário: Manter seus dados pessoais, como endereço ou telefone, sempre atualizados no sistema.
 Guia Passo a Passo para o Beneficiário:
-    1.  Como faço para atualizar? "É muito fácil! Me informe aqui pelo WhatsApp quais dados você deseja atualizar (por exemplo, endereço, telefone, e-mail)."
-    2.  Preciso enviar algum documento? "Sim. Após me dizer o que quer mudar, vou pedir que você anexe um documento que comprove essa alteração. Por exemplo, um novo comprovante de residência para mudança de endereço."
+    1.  Como faço para atualizar? "É muito fácil! Informe pelo WhatsApp, email ou presencialmente quais dados você deseja atualizar (Exemplo: endereço, telefone, e-mail)."
+    2.  Preciso enviar algum documento? "Sim. Após dizer o que quer mudar, vou pedir que você anexe um documento que comprove essa alteração. Por exemplo, um novo comprovante de residência para mudança de endereço. Esse documento deve ser anexado nos canais de comunição."
 Gateways e Orientações:
     Gateway 1: Verificação de Informações
         Pergunta/Decisão: O documento enviado confirma as informações que o beneficiário pediu para alterar?
         Opção "Sim" / "Informações Corretas":
-            Próximo Passo do Sistema: Os dados são atualizados no CRM.
+            Próximo Passo do Sistema: Os dados são atualizados no Conselho Regional de Medicina (CRM).
             Instrução para o Beneficiário (O que o Chatbot deve dizer): "Recebido! Verificamos seu documento e seus dados já foram atualizados com sucesso em nosso sistema."
         Opção "Não" / "Informações Incorretas":
             Próximo Passo do Sistema: O processo é pausado.
